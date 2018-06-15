@@ -6,20 +6,12 @@
 
 #define QUANTIDADE_MAXIMA_CLIENTES 5
 
-typedef struct {
-	char rua[50];
-	char numero[6];
-	char complemento[20];
-	char bairro[20];
-	char cidade[30];
-	char estado[2]; 
-} Endereco;
 
 typedef struct {
 	int id;
 	char nome[100];
 	char telefone[10];
-	Endereco endereco;
+	char endereco[100];
 } Cliente;
 
 typedef enum OpcoesMenu { Sair, Cadastrar, Consultar } OpcaoMenu;
@@ -29,6 +21,7 @@ void executa( OpcaoMenu opcao );
 void cadastra_novo_cliente();
 void consulta_clientes();
 int podeCadastrarNovoCliente();
+int geraNovoId();
 
 Cliente clientes[ QUANTIDADE_MAXIMA_CLIENTES ];
 
@@ -40,7 +33,7 @@ int main(int argc, char *argv[]) {
 		opcao = apresenta_menu();
 		if (opcao > Consultar){
 			printf("Opcao invalida!\n");
-			//sleep(2);
+			sleep(2);
 		} else {
 			executa(opcao);
 		}
@@ -52,7 +45,7 @@ int main(int argc, char *argv[]) {
 OpcaoMenu apresenta_menu(){
 	int opcao;
 	
-	//system("CLS");
+	system("CLS");
 
 	printf("Seja bem vindo!\n");
 	printf("[1] - Cadastrar novo cliente\n");
@@ -81,7 +74,40 @@ void executa( OpcaoMenu opcao ) {
 }
 
 void cadastra_novo_cliente(){
-	printf("cadastra cli\n");
+	Cliente cliente;
+	cliente.id = geraNovoId();
+
+	system("cls");
+		
+	printf("Cadastrando cliente ID: %i\n\n", cliente.id);
+	
+	printf("Nome do cliente:");
+	scanf("&s", &cliente.nome);
+	fflush(stdin);
+	
+	printf("\nTelefone do cliente:");
+    scanf("&s", &cliente.telefone);
+	fflush(stdin);
+	
+	printf("\nEndereco do cliente:");
+    scanf("&s", &cliente.endereco);
+	fflush(stdin);
+	
+}
+
+int geraNovoId(){
+	int i;
+	int max = 0;
+	
+	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
+		if(clientes[i].id != 0){
+			if(clientes[i].id > max ){
+				max = clientes[i].id;
+			}
+		}
+	}
+	
+	return max + 1;
 }
 
 void consulta_clientes(){
