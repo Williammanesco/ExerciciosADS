@@ -22,6 +22,7 @@ void cadastra_novo_cliente();
 void consulta_clientes();
 int podeCadastrarNovoCliente();
 int geraNovoId();
+void grava_cadastro_cliente(cliente);
 
 Cliente clientes[ QUANTIDADE_MAXIMA_CLIENTES ];
 
@@ -54,6 +55,7 @@ OpcaoMenu apresenta_menu(){
 	
 	printf("Digite a opcao: ");
 	scanf("%i", &opcao);
+	fflush(stdin);
 	
 	return (OpcaoMenu) opcao;
 }
@@ -64,7 +66,7 @@ void executa( OpcaoMenu opcao ) {
 			if( podeCadastrarNovoCliente() )
 			   cadastra_novo_cliente();
 			else 
-			   printf("O numero maximo de clientes foi atingido! (5)\n");
+			   printf("Agenda lotada!\n");
 			      
 			break;
 		case Consultar:
@@ -79,9 +81,9 @@ void cadastra_novo_cliente(){
 
 	system("cls");
 		
-	printf("Cadastrando cliente ID: %i\n\n", cliente.id);
+	printf("Cadastrando cliente ID: %i\n", cliente.id);
 	
-	printf("Nome do cliente:");
+	printf("\nNome do cliente:");
 	scanf("&s", &cliente.nome);
 	fflush(stdin);
 	
@@ -93,6 +95,20 @@ void cadastra_novo_cliente(){
     scanf("&s", &cliente.endereco);
 	fflush(stdin);
 	
+	grava_cadastro_cliente(cliente);
+	
+}
+
+void grava_cadastro_cliente(Cliente cliente){
+	
+	int i;	
+	
+	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
+		if(clientes[i].id == 0){
+			clientes[i] = cliente;
+			break;
+		}
+	}	
 }
 
 int geraNovoId(){
@@ -111,7 +127,16 @@ int geraNovoId(){
 }
 
 void consulta_clientes(){
-	printf("consulta cli\n");
+	int i;
+	printf("CODIGO | NOME                                       | TELEFONE | ENDERECO");
+
+	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
+		if (clientes[i].id != 0){
+			printf("      %i", clientes[i].id );
+			printf(" %s", clientes[i].nome );
+		}
+			
+	}
 }
 
 int podeCadastrarNovoCliente(){
