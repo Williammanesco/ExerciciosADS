@@ -10,7 +10,7 @@
 typedef struct {
 	int id;
 	char nome[100];
-	char telefone[10];
+	char telefone[20];
 	char endereco[100];
 } Cliente;
 
@@ -22,6 +22,8 @@ void cadastra_novo_cliente();
 void consulta_clientes();
 int podeCadastrarNovoCliente();
 int geraNovoId();
+int contaClientesCadastrados();
+void grava_cadastro_cliente(Cliente cliente);
 
 Cliente clientes[ QUANTIDADE_MAXIMA_CLIENTES ];
 
@@ -54,21 +56,31 @@ OpcaoMenu apresenta_menu(){
 	
 	printf("Digite a opcao: ");
 	scanf("%i", &opcao);
+	fflush(stdin);
 	
 	return (OpcaoMenu) opcao;
 }
-
+	
 void executa( OpcaoMenu opcao ) {
 	switch(opcao){
 		case Cadastrar:
 			if( podeCadastrarNovoCliente() )
 			   cadastra_novo_cliente();
-			else 
-			   printf("O numero maximo de clientes foi atingido! (5)\n");
+			else {
+			  printf("Agenda lotada! (5)\n");
+			  sleep(3);	
+			} 
 			      
 			break;
+			
 		case Consultar:
-			consulta_clientes();
+			if(contaClientesCadastrados() == 0){
+				printf("Agenda vazia!");
+				sleep(3);
+			} else {
+			   	consulta_clientes();	
+			}
+			
 			break;
 	}
 }
@@ -76,23 +88,43 @@ void executa( OpcaoMenu opcao ) {
 void cadastra_novo_cliente(){
 	Cliente cliente;
 	cliente.id = geraNovoId();
+	char nome[100];
+	char telefone[20];
+	char endereco[100];
 
 	system("cls");
 		
 	printf("Cadastrando cliente ID: %i\n\n", cliente.id);
 	
 	printf("Nome do cliente:");
-	scanf("&s", &cliente.nome);
-	fflush(stdin);
+	gets(nome);
 	
 	printf("\nTelefone do cliente:");
-    scanf("&s", &cliente.telefone);
-	fflush(stdin);
+    gets(telefone);
 	
 	printf("\nEndereco do cliente:");
-    scanf("&s", &cliente.endereco);
-	fflush(stdin);
+    gets(endereco);
+    
+	strcpy(cliente.nome, nome);
+	strcpy(cliente.telefone, telefone);
+	strcpy(cliente.endereco, endereco);
 	
+	printf("\n CLIENTE CADASTRADO!")
+	sleep(2)
+	
+	grava_cadastro_cliente(cliente);
+}
+
+void grava_cadastro_cliente(Cliente cliente){
+	
+	int i;	
+	
+	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
+		if(clientes[i].id == 0){
+			clientes[i] = cliente;
+			break;
+		}
+	}	
 }
 
 int geraNovoId(){
@@ -111,10 +143,30 @@ int geraNovoId(){
 }
 
 void consulta_clientes(){
-	printf("consulta cli\n");
+	printf("Clientes cadastrados\n");
+
+	int i;
+	Cliente cliente;
+	
+	printf("Codigo | Nome                                         | Telefone    | Endereco \n");
+	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
+		cliente = clientes[i];
+		
+		if(cliente.id > 0){
+			printf("      %i", cliente.id);
+			printf("  %-45s", cliente.nome);
+			printf("  %-13s", cliente.telefone);
+			printf(" %s", cliente.endereco);
+			printf("\n");	
+		}
+		
+	}
+	
+	//printf("\n Pressione qualquer tecla para sair...");
+	system("PAUSE");
 }
 
-int podeCadastrarNovoCliente(){
+int contaClientesCadastrados(){
 	int count = 0, i;
 	
 	for(i = 0; i < QUANTIDADE_MAXIMA_CLIENTES ; i++ ){
@@ -123,6 +175,10 @@ int podeCadastrarNovoCliente(){
 		}
 	}
 	
-	return count < 5;
+	return count;	
+}
+
+int podeCadastrarNovoCliente(){
+	return contaClientesCadastrados() < 5;
 }
 
