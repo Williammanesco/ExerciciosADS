@@ -109,8 +109,8 @@ void cadastra_novo_cliente(){
 	strcpy(cliente.telefone, telefone);
 	strcpy(cliente.endereco, endereco);
 	
-	printf("\n CLIENTE CADASTRADO!")
-	sleep(2)
+	printf("\n CLIENTE CADASTRADO!");
+	sleep(2);
 	
 	grava_cadastro_cliente(cliente);
 }
